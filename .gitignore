@@ -1,0 +1,26 @@
+# Credit union website data: shared for this event only, never commit
+/snapshots/
+/snapshots_zip/
+*.zip
+/Knowledge-Hackathon-Assignment.pdf
+
+# Secrets
+.env
+.env.*
+*.key
+
+# Scorer output and caches
+results/
+.cache/
+*.pkl
+*.sqlite
+
+# Python / OS
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+.idea/
+.vscode/
