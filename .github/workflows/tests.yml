@@ -1,0 +1,29 @@
+# Unit, end-to-end and fuzz tests on every push and pull request.
+# They use small built-in pages shaped like the real site, so no snapshot data is needed.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install (standard library only; pyflakes for the lint step)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyflakes
+      - name: Lint
+        run: python -m pyflakes solution tests scripts
+      - name: Tests
+        run: python -m unittest discover -s tests -v
