@@ -52,7 +52,7 @@ class Range:
         def fmt(value: Optional[float]) -> str:
             if value is None:
                 return ""
-            return f"{value:g}" if value != int(value) else str(int(value))
+            return f"{value:.2f}".rstrip("0").rstrip(".")
 
         return f"{fmt(self.lo)}-{fmt(self.hi)}"
 
@@ -125,15 +125,21 @@ def parse_term_months(text: str) -> Optional[int]:
     return None
 
 
-KINDS = ("rate", "apr", "apy", "dividend_rate", "intro_apr", "intro_dividend_rate", "points")
+KINDS = ("rate", "apr", "apy", "dividend_rate", "intro_apr", "intro_apy", "intro_dividend_rate", "points",
+         "min_open", "min_earn")
+MONEY_KINDS = ("min_open", "min_earn")
 
 
 def kind_from_header(header: str) -> Optional[str]:
     """Map a table column heading to its rate kind."""
     header = normalize(re.sub(r"\d+$", "", (header or "").strip()))
     intro = any(word in header for word in ("intro", "1st", "first"))
+    if re.search(r"\bmin(?:imum)?\.? to open\b|\bminimum (?:opening )?deposit\b", header):
+        return "min_open"
+    if re.search(r"\bmin(?:imum)?\.? to earn\b", header):
+        return "min_earn"
     if "annual percentage yield" in header or re.search(r"\bapy\b", header):
-        return "apy"
+        return "intro_apy" if intro else "apy"
     if "dividend" in header:
         return "intro_dividend_rate" if intro else "dividend_rate"
     if "annual percentage rate" in header or re.search(r"\bapr\b", header):
@@ -158,6 +164,17 @@ def clean_percent(cell: str) -> Optional[str]:
     if match:
         return match.group(1) + "%"
     return None
+
+
+_MONEY = re.compile(r"\$\s*(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{2}))?")
+
+
+def clean_money(cell: str) -> Optional[str]:
+    """'$25.00' -> '$25.00', '$100,000.00' -> '$100,000.00', 'None' -> None. Kept as written."""
+    m = _MONEY.search(cell or "")
+    if not m:
+        return None
+    return m.group(0).replace(" ", "")
 
 
 def percent_value(text: str) -> Optional[float]:
@@ -268,9 +285,6 @@ PRODUCT_SYNONYMS = {
     "vehicle": "auto",
     "truck": "auto",
     "home loan": "mortgage",
-    "boat": "recreational",
-    "rv": "recreational",
-    "camper": "recreational",
     "credit card": "visa",
 }
 

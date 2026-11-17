@@ -41,6 +41,8 @@ class TestRanges(unittest.TestCase):
         self.assertEqual(parse_amount("$100,000 or less"), Range(None, 100000))
         self.assertEqual(parse_amount("$832,750 or less"), Range(None, 832750))
         self.assertIsNone(parse_amount("Bright Savings"))
+        self.assertEqual(str(Range(10000, 24999.99)), "10000-24999.99")   # cents kept when shown
+        self.assertEqual(str(Range(None, 100000)), "-100000")
 
     def test_terms(self):
         self.assertEqual(parse_term_months("60 Months"), 60)
@@ -55,11 +57,14 @@ class TestKindsAndValues(unittest.TestCase):
         self.assertEqual(kind_from_header("Annual Percentage Yield (APY)1"), "apy")
         self.assertEqual(kind_from_header("Dividend Rate"), "dividend_rate")
         self.assertEqual(kind_from_header("Dividend Rate for 1st 6 Months"), "intro_dividend_rate")
+        self.assertEqual(kind_from_header("Annual Percentage Yield (APY)\\* for 1st 6 Months"), "intro_apy")
+        self.assertEqual(kind_from_header("APY\\* After Promotional Period"), "apy")
         self.assertEqual(kind_from_header("Annual Percentage Rate (As Low As)"), "apr")
         self.assertEqual(kind_from_header("APR (As Low As)"), "apr")
         self.assertEqual(kind_from_header("Rate"), "rate")
         self.assertEqual(kind_from_header("Points"), "points")
-        self.assertIsNone(kind_from_header("Min. to Earn"))
+        self.assertEqual(kind_from_header("Min. to Earn"), "min_earn")
+        self.assertEqual(kind_from_header("Min. to Open"), "min_open")
         self.assertIsNone(kind_from_header("*Payment Example"))
 
     def test_clean_percent(self):
