@@ -77,7 +77,7 @@ answer(question, as_of)
 | `scripts/ask.py` | Ask from the command line and see why (`explain()`) |
 | `scripts/regression.py` | Generated regression over every tier in every snapshot |
 | `tests/` | 89 unit, end-to-end and fuzz tests; extra and blind question sets |
-| `.github/workflows/tests.yml` | CI: lint and tests on Python 3.9, 3.11, 3.12 |
+| `.github/workflows/tests.yml` | CI: lint and tests on Python 3.10, 3.11, 3.12, 3.13 |
 
 ## Run it
 

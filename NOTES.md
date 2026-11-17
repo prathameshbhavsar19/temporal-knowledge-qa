@@ -2,7 +2,7 @@
 
 ## API keys and dependencies
 
-**None.** The solution uses only the Python standard library (tests pass on Python 3.9, 3.11 and 3.12).
+**None.** The solution uses only the Python standard library (tests pass on Python 3.9 to 3.13).
 No paid APIs, no model downloads, no network calls at ingest or answer time.
 `requirements.txt` is intentionally empty.
 
@@ -147,7 +147,7 @@ contradictions. Precision counts in the score, so near-duplicates are merged and
 | Blind set v1 | 28 questions written after the first version, before looking at its answers | 0.785 at first; 1.00 after the fixes below (so no longer blind) |
 | Blind set v2 | 32 new questions written after all fixes, values read from the raw pages | **0.969 on first run** (one miss, "Is the Hy-Vee branch still open?", then fixed) |
 | Generated regression | `scripts/regression.py`: every tier of every product in every snapshot, asked two ways with that snapshot's date | 2,056 / 2,056 |
-| Unit and end-to-end tests | 89 tests on small built-in pages shaped like the real site; run in CI on 3.9, 3.11, 3.12 | all pass |
+| Unit and end-to-end tests | 89 tests on small built-in pages shaped like the real site; run in CI on 3.10, 3.11, 3.12, 3.13 | all pass |
 | Fuzz tests | empty, very long, unicode, injection-like and random questions; impossible dates | no crash, under 2 s, refusals never state a number |
 | Kit self-test | `harness/selftest` | 5 / 5 answers, conflict F1 1.0 |
 | Fresh clone | Python 3.11, two hash seeds | same answers, p95 0.4 s, ingest 15 s |
